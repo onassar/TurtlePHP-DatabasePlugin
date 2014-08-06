@@ -7,16 +7,15 @@
     namespace Plugin\Database;
 
     /**
-     * Data
+     * Config settings
      * 
      */
-    $data = array(
-        'cacheNamespace' => 'mysql',
+    $config = array(
         'host' => 'localhost',
         'port' => 3306,
         'username' => 'app',
         'password' => 'apples',
-        'name' => 'mysql',
+        'database' => 'mysql',
         'encoding' => 'utf8',
         'timezone' => 'ETC\/UTC'
     );
@@ -29,5 +28,5 @@
     // Store
     \Plugin\Config::add(
         'TurtlePHP-DatabasePlugin',
-        $data
+        $config
     );

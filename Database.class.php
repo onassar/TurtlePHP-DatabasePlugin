@@ -75,7 +75,7 @@
                     'username' => $config['username'],
                     'password' => $config['password']
                 ));
-                (new \MySQLQuery('USE `'.  ($config['name']) . '`'));
+                (new \MySQLQuery('USE `'.  ($config['database']) . '`'));
                 (new \MySQLQuery(
                     'SET time_zone = \'' . ($config['timezone']) . '\''
                 ));
@@ -101,5 +101,5 @@
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
     if (is_file($configPath)) {
-        Emailer::setConfigPath($configPath);
+        Database::setConfigPath($configPath);
     }
