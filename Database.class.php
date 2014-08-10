@@ -30,7 +30,7 @@
     /**
      * Database
      * 
-     * Memcached database plugin for TurtlePHP
+     * Database plugin for TurtlePHP
      * 
      * @author   Oliver Nassar <onassar@gmail.com>
      * @abstract
