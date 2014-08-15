@@ -67,8 +67,7 @@
             if (is_null(self::$_connected) === false) {
                 self::$_connected = true;
                 require_once self::$_configPath;
-                $config = \Plugin\Config::retrieve();
-                $config = $config['TurtlePHP-DatabasePlugin'];
+                $config = \Plugin\Config::retrieve('TurtlePHP-DatabasePlugin');
                 \MySQLConnection::init(array(
                     'host' => $config['host'],
                     'port' => $config['port'],
