@@ -71,10 +71,10 @@
                 \MySQLConnection::init(array(
                     'host' => $config['host'],
                     'port' => $config['port'],
+                    'database' => $config['database'],
                     'username' => $config['username'],
                     'password' => $config['password']
                 ));
-                (new \MySQLQuery('USE `'.  ($config['database']) . '`'));
                 (new \MySQLQuery(
                     'SET time_zone = \'' . ($config['timezone']) . '\''
                 ));
