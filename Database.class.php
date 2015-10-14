@@ -74,7 +74,7 @@
                     'database' => $config['database'],
                     'username' => $config['username'],
                     'password' => $config['password']
-                ));
+                ), $config['benchmark']);
                 (new \MySQLQuery(
                     'SET time_zone = \'' . ($config['timezone']) . '\''
                 ));
