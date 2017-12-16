@@ -40,8 +40,8 @@
         /**
          * _configPath
          *
-         * @var    string
-         * @access protected
+         * @var     string
+         * @access  protected
          * @static
          */
         protected static $_configPath = 'config.default.inc.php';
@@ -49,8 +49,8 @@
         /**
          * _connected
          *
-         * @var    boolean
-         * @access protected
+         * @var     boolean
+         * @access  protected
          * @static
          */
         protected static $_connected = false;
@@ -58,9 +58,9 @@
         /**
          * connect
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return void
+         * @return  void
          */
         public static function connect()
         {
@@ -85,9 +85,9 @@
         /**
          * setConfigPath
          * 
-         * @access public
-         * @param  string $path
-         * @return void
+         * @access  public
+         * @param   string $path
+         * @return  void
          */
         public static function setConfigPath($path)
         {
@@ -99,6 +99,6 @@
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    if (is_file($configPath)) {
+    if (is_file($configPath) === true) {
         Database::setConfigPath($configPath);
     }
