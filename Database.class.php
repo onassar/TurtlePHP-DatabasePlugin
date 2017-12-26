@@ -75,10 +75,10 @@
                     'username' => $config['username'],
                     'password' => $config['password']
                 ), $config['benchmark']);
-                (new \MySQLQuery(
+                new \MySQLQuery(
                     'SET time_zone = \'' . ($config['timezone']) . '\''
-                ));
-                (new \MySQLQuery('SET names ' . ($config['encoding'])));
+                );
+                new \MySQLQuery('SET names ' . ($config['encoding']));
             }
         }
 
