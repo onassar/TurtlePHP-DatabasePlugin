@@ -17,7 +17,7 @@
         'password' => 'apples',
         'database' => 'mysql',
         'encoding' => 'utf8',
-        'timezone' => 'ETC\/UTC',
+        'timezone' => 'ETC/UTC',
         'benchmark' => true
     );
 

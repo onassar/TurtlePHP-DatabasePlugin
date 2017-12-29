@@ -56,6 +56,67 @@
         protected static $_connected = false;
 
         /**
+         * _getConfig
+         * 
+         * @access  protected
+         * @static
+         * @return  array
+         */
+        protected static function _getConfig()
+        {
+            return Config::retrieve('TurtlePHP-DatabasePlugin');
+        }
+
+        /**
+         * _initializeConnection
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _initializeConnection()
+        {
+            $config = self::_getConfig();
+            \MySQLConnection::init(array(
+                'host' => $config['host'],
+                'port' => $config['port'],
+                'database' => $config['database'],
+                'username' => $config['username'],
+                'password' => $config['password']
+            ), $config['benchmark']);
+        }
+
+        /**
+         * _setEncoding
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _setEncoding()
+        {
+            $config = self::_getConfig();
+            $encoding = $config['encoding'];
+            $statement = 'SET names ' . ($encoding);
+            new \MySQLQuery($statement);
+        }
+
+        /**
+         * _setTimezone
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _setTimezone()
+        {
+            $config = self::_getConfig();
+            $timezone = $config['timezone'];
+            $statement = 'SET time_zone = `' . ($timezone) . '`';
+            new \MySQLQuery($statement);
+        }
+
+        /**
          * connect
          * 
          * @access  public
@@ -67,18 +128,9 @@
             if (self::$_connected === false) {
                 self::$_connected = true;
                 require_once self::$_configPath;
-                $config = \Plugin\Config::retrieve('TurtlePHP-DatabasePlugin');
-                \MySQLConnection::init(array(
-                    'host' => $config['host'],
-                    'port' => $config['port'],
-                    'database' => $config['database'],
-                    'username' => $config['username'],
-                    'password' => $config['password']
-                ), $config['benchmark']);
-                new \MySQLQuery(
-                    'SET time_zone = \'' . ($config['timezone']) . '\''
-                );
-                new \MySQLQuery('SET names ' . ($config['encoding']));
+                self::_initializeConnection();
+                self::_setTimezone();
+                self::_setEncoding();
             }
         }
 
