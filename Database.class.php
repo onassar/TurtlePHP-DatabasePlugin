@@ -77,12 +77,14 @@
         protected static function _initializeConnection()
         {
             $config = self::_getConfig();
+            $username = 'app';
+            $password = $config['users'][$username];
             \MySQLConnection::init(array(
                 'host' => $config['host'],
                 'port' => $config['port'],
                 'database' => $config['database'],
-                'username' => $config['username'],
-                'password' => $config['password']
+                'username' => $username,
+                'password' => $password
             ), $config['benchmark']);
         }
 

@@ -13,8 +13,9 @@
     $config = array(
         'host' => 'localhost',
         'port' => 3306,
-        'username' => 'app',
-        'password' => 'apples',
+        'users' => array(
+            'app' => 'apples'
+        ),
         'database' => 'mysql',
         'encoding' => 'utf8',
         'timezone' => 'ETC/UTC',
