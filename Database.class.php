@@ -89,18 +89,19 @@
         }
 
         /**
-         * _setEncoding
+         * _runInitialStatements
          * 
          * @access  protected
          * @static
          * @return  void
          */
-        protected static function _setEncoding()
+        protected static function _runInitialStatements()
         {
             $config = self::_getConfig();
-            $encoding = $config['encoding'];
-            $statement = 'SET names ' . ($encoding);
-            new \MySQLQuery($statement);
+            $initialStatements = $config['initialStatements'];
+            foreach ($initialStatements as $statement) {
+                new \MySQLQuery($statement);
+            }
         }
 
         /**
@@ -132,7 +133,7 @@
                 require_once self::$_configPath;
                 self::_initializeConnection();
                 self::_setTimezone();
-                self::_setEncoding();
+                self::_runInitialStatements();
             }
         }
 

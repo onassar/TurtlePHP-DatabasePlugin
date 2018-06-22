@@ -17,7 +17,10 @@
             'app' => 'apples'
         ),
         'database' => 'mysql',
-        'encoding' => 'utf8',
+        'initialStatements' => array(
+            'SET names utf8mb4',
+            'SET collation_connection = utf8mb4_unicode_ci'
+        ),
         'timezone' => 'ETC/UTC',
         'benchmark' => true
     );
