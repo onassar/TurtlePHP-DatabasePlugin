@@ -40,8 +40,8 @@
         /**
          * _configPath
          *
-         * @var     string
          * @access  protected
+         * @var     string
          * @static
          */
         protected static $_configPath = 'config.default.inc.php';
@@ -49,8 +49,8 @@
         /**
          * _connected
          *
-         * @var     boolean
          * @access  protected
+         * @var     bool
          * @static
          */
         protected static $_connected = false;
