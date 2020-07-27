@@ -7,10 +7,10 @@
     namespace Plugin\Database;
 
     /**
-     * Config settings
+     * Plugin Config Data
      * 
      */
-    $config = array(
+    $pluginConfigData = array(
         'host' => 'localhost',
         'port' => 3306,
         'users' => array(
@@ -26,12 +26,8 @@
     );
 
     /**
-     * Config storage
+     * Storage
      * 
      */
-
-    // Store
-    \Plugin\Config::add(
-        'TurtlePHP-DatabasePlugin',
-        $config
-    );
+    $key = 'TurtlePHP-DatabasePlugin';
+    \Plugin\Config::add($key, $pluginConfigData);
