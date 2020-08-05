@@ -3,34 +3,10 @@
     // namespace
     namespace Plugin;
 
-    // dependency check
-    if (class_exists('\\Plugin\\Config') === false) {
-        throw new \Exception(
-            '*Config* class required. Please see ' .
-            'https://github.com/onassar/TurtlePHP-ConfigPlugin'
-        );
-    }
-
-    // dependency check
-    if (class_exists('\\MySQLConnection') === false) {
-        throw new \Exception(
-            '*MySQLConnection* class required. Please see ' .
-            'https://github.com/onassar/PHP-MySQL'
-        );
-    }
-
-    // dependency check
-    if (class_exists('\\MySQLQuery') === false) {
-        throw new \Exception(
-            '*MySQLQuery* class required. Please see ' .
-            'https://github.com/onassar/PHP-MySQL'
-        );
-    }
-
     /**
      * Database
      * 
-     * Database plugin for TurtlePHP
+     * Database plugin for TurtlePHP.
      * 
      * @author  Oliver Nassar <onassar@gmail.com>
      * @abstract
@@ -41,7 +17,7 @@
          * _configPath
          *
          * @access  protected
-         * @var     string
+         * @var     string (default: 'config.default.inc.php')
          * @static
          */
         protected static $_configPath = 'config.default.inc.php';
@@ -50,21 +26,120 @@
          * _connected
          *
          * @access  protected
-         * @var     bool
+         * @var     bool (default: false)
          * @static
          */
         protected static $_connected = false;
 
         /**
-         * _getConfig
+         * _initiated
+         *
+         * @access  protected
+         * @var     bool (default: false)
+         * @static
+         */
+        protected static $_initiated = false;
+
+        /**
+         * _checkConfigPluginDependency
+         * 
+         * @throws  \Exception
+         * @access  protected
+         * @static
+         * @return  bool
+         */
+        protected static function _checkConfigPluginDependency(): bool
+        {
+            if (class_exists('\\Plugin\\Config') === true) {
+                return true;
+            }
+            $link = 'https://github.com/onassar/TurtlePHP-ConfigPlugin';
+            $msg = '*\Plugin\Config* class required. Please see ' . ($link);
+            throw new \Exception($msg);
+        }
+
+        /**
+         * _checkDependencies
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _checkDependencies(): void
+        {
+            static::_checkConfigPluginDependency();
+            static::_checkMySQLConnectionDependency();
+            static::_checkMySQLQueryDependency();
+        }
+
+        /**
+         * _checkMySQLConnectionDependency
+         * 
+         * @throws  \Exception
+         * @access  protected
+         * @static
+         * @return  bool
+         */
+        protected static function _checkMySQLConnectionDependency(): bool
+        {
+            if (class_exists('\\MySQLConnection') === true) {
+                return true;
+            }
+            $link = 'https://github.com/onassar/PHP-MySQL';
+            $msg = '*\MySQLConnection* class required. Please see ' . ($link);
+            throw new \Exception($msg);
+        }
+
+        /**
+         * _checkMySQLQueryDependency
+         * 
+         * @throws  \Exception
+         * @access  protected
+         * @static
+         * @return  bool
+         */
+        protected static function _checkMySQLQueryDependency(): bool
+        {
+            if (class_exists('\\MySQLQuery') === true) {
+                return true;
+            }
+            $link = 'https://github.com/onassar/PHP-MySQL';
+            $msg = '*\MySQLQuery* class required. Please see ' . ($link);
+            throw new \Exception($msg);
+        }
+
+        /**
+         * _getConfigData
          * 
          * @access  protected
          * @static
          * @return  array
          */
-        protected static function _getConfig()
+        protected static function _getConfigData(): array
         {
-            return Config::retrieve('TurtlePHP-DatabasePlugin');
+            $key = 'TurtlePHP-DatabasePlugin';
+            $configData = \Plugin\Config::retrieve($key);
+            return $configData;
+        }
+
+        /**
+         * _getMySQLConnectionOptions
+         * 
+         * @access  protected
+         * @static
+         * @return  array
+         */
+        protected static function _getMySQLConnectionOptions(): array
+        {
+            $configData = static::_getConfigData();
+            $host = $configData['host'];
+            $port = $configData['port'];
+            $database = $configData['database'];
+            $username = $configData['username'];
+            $password = $configData['users'][$username];
+            $args = array('host', 'port', 'database', 'username', 'password');
+            $options = compact(... $args);
+            return $options;
         }
 
         /**
@@ -74,18 +149,25 @@
          * @static
          * @return  void
          */
-        protected static function _initializeConnection()
+        protected static function _initializeConnection(): void
         {
-            $config = self::_getConfig();
-            $username = 'app';
-            $password = $config['users'][$username];
-            \MySQLConnection::init(array(
-                'host' => $config['host'],
-                'port' => $config['port'],
-                'database' => $config['database'],
-                'username' => $username,
-                'password' => $password
-            ), $config['benchmark']);
+            $options = static::_getMySQLConnectionOptions();
+            $configData = static::_getConfigData();
+            $benchmark = $configData['benchmark'];
+            \MySQLConnection::init($options, $benchmark);
+        }
+
+        /**
+         * _loadConfigPath
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _loadConfigPath(): void
+        {
+            $path = static::$_configPath;
+            require_once $path;
         }
 
         /**
@@ -95,13 +177,37 @@
          * @static
          * @return  void
          */
-        protected static function _runInitialStatements()
+        protected static function _runInitialStatements(): void
         {
-            $config = self::_getConfig();
-            $initialStatements = $config['initialStatements'];
-            foreach ($initialStatements as $statement) {
-                new \MySQLQuery($statement);
+            $configData = static::_getConfigData();
+            $initialStatements = $configData['initialStatements'];
+            foreach ($initialStatements as $initialStatement) {
+                new \MySQLQuery($initialStatement);
             }
+        }
+
+        /**
+         * _setConnected
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _setConnected(): void
+        {
+            static::$_connected = true;
+        }
+
+        /**
+         * _setInitiated
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _setInitiated(): void
+        {
+            static::$_initiated = true;
         }
 
         /**
@@ -111,10 +217,10 @@
          * @static
          * @return  void
          */
-        protected static function _setTimezone()
+        protected static function _setTimezone(): void
         {
-            $config = self::_getConfig();
-            $timezone = $config['timezone'];
+            $configData = static::_getConfigData();
+            $timezone = $configData['timezone'];
             $statement = 'SET time_zone = `' . ($timezone) . '`';
             new \MySQLQuery($statement);
         }
@@ -124,36 +230,57 @@
          * 
          * @access  public
          * @static
-         * @return  void
+         * @return  bool
          */
-        public static function connect()
+        public static function connect(): bool
         {
-            if (self::$_connected === false) {
-                self::$_connected = true;
-                require_once self::$_configPath;
-                self::_initializeConnection();
-                self::_setTimezone();
-                self::_runInitialStatements();
+            if (static::$_connected === true) {
+                return false;
             }
+            static::_setConnected();
+            static::_initializeConnection();
+            static::_setTimezone();
+            static::_runInitialStatements();
+            return true;
+        }
+
+        /**
+         * init
+         * 
+         * @access  public
+         * @static
+         * @return  bool
+         */
+        public static function init(): bool
+        {
+            if (static::$_initiated === true) {
+                return false;
+            }
+            static::_setInitiated();
+            static::_checkDependencies();
+            static::_loadConfigPath();
+            return true;
         }
 
         /**
          * setConfigPath
          * 
          * @access  public
-         * @param   string $path
-         * @return  void
+         * @param   string $configPath
+         * @return  bool
          */
-        public static function setConfigPath($path)
+        public static function setConfigPath(string $configPath): bool
         {
-            self::$_configPath = $path;
+            if (is_file($configPath) === false) {
+                return false;
+            }
+            static::$_configPath = $configPath;
+            return true;
         }
     }
 
-    // Config
+    // Config path loading
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    if (is_file($configPath) === true) {
-        Database::setConfigPath($configPath);
-    }
+    Database::setConfigPath($configPath);
