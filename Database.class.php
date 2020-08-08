@@ -16,7 +16,7 @@
     {
         /**
          * _configPath
-         *
+         * 
          * @access  protected
          * @var     string (default: 'config.default.inc.php')
          * @static
@@ -25,7 +25,7 @@
 
         /**
          * _connected
-         *
+         * 
          * @access  protected
          * @var     bool (default: false)
          * @static
@@ -34,7 +34,7 @@
 
         /**
          * _initiated
-         *
+         * 
          * @access  protected
          * @var     bool (default: false)
          * @static
