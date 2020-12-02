@@ -6,7 +6,11 @@
     /**
      * Database
      * 
-     * Database plugin for TurtlePHP.
+     * Database plugin for TurtlePHP. Helps facilitate database connections and
+     * queries using the MySQLConnection and MySQLQuery classes.
+     * 
+     * It's role is to simply facilitate that connection (with a normalized
+     * config file); not to replace any connection or query processes.
      * 
      * @author  Oliver Nassar <onassar@gmail.com>
      * @abstract
@@ -67,7 +71,8 @@
             $configData = static::_getConfigData();
             $host = $configData['host'];
             $port = $configData['port'];
-            $database = $configData['database'];
+            $databaseKey = $configData['defaultDatabaseKey'];
+            $database = static::getDatabaseNameByKey($databaseKey);
             $username = $configData['username'];
             $password = $configData['users'][$username];
             $args = array('host', 'port', 'database', 'username', 'password');
@@ -76,13 +81,13 @@
         }
 
         /**
-         * _initializeConnection
+         * _initConnection
          * 
          * @access  protected
          * @static
          * @return  void
          */
-        protected static function _initializeConnection(): void
+        protected static function _initConnection(): void
         {
             $options = static::_getMySQLConnectionOptions();
             $configData = static::_getConfigData();
@@ -146,10 +151,26 @@
                 return false;
             }
             static::_setConnected();
-            static::_initializeConnection();
+            static::_initConnection();
             static::_setTimezone();
             static::_runInitialStatements();
             return true;
+        }
+
+        /**
+         * getDatabaseNameByKey
+         * 
+         * @access  public
+         * @static
+         * @param   string $databaseKey
+         * @return  string
+         */
+        public static function getDatabaseNameByKey(string $databaseKey): string
+        {
+            $configData = static::_getConfigData();
+            $databases = $configData['databases'];
+            $databaseName = $databases[$databaseKey];
+            return $databaseName;
         }
 
         /**
