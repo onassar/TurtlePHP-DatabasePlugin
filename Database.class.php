@@ -134,7 +134,8 @@
         {
             $configData = static::_getConfigData();
             $timezone = $configData['timezone'];
-            $statement = 'SET time_zone = `' . ($timezone) . '`';
+            // $statement = 'SET time_zone = `' . ($timezone) . '`';
+            $statement = 'SET time_zone = \'' . ($timezone) . '\'';
             new \MySQLQuery($statement);
         }
 
